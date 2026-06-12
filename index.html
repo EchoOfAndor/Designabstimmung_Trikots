@@ -1,513 +1,376 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>HVC Trikot-Abstimmung</title>
+<meta charset="UTF-8">
+<title>HVC Trikot-Abstimmung</title>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      --hvc-main: #800000;      /* Maroon */
-      --hvc-main-light: #b22222;
-      --hvc-bg: #f7f7f9;
-      --hvc-card-bg: #ffffff;
-      --hvc-border: #dddddd;
-      --hvc-text: #111111;
-    }
+<style>
+:root {
+  --hvc-main: #800000;
+  --hvc-main-light: #b22222;
+  --hvc-bg: #f7f7f9;
+  --hvc-card-bg: #ffffff;
+  --hvc-border: #dddddd;
+  --hvc-text: #111111;
+}
 
-    * {
-      box-sizing: border-box;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: radial-gradient(circle at top, #ffffff 0, #f3f3f7 40%, #e9e9f0 100%);
-      color: var(--hvc-text);
-      margin: 0;
-      padding: 0;
-    }
+body {
+  font-family: 'Roboto', sans-serif;
+  background: radial-gradient(circle at top, #ffffff 0, #f3f3f7 40%, #e9e9f0 100%);
+  color: var(--hvc-text);
+  margin: 0;
+  padding: 0;
+}
 
-    .container {
-      max-width: 900px;
-      margin: 30px auto 40px;
-      padding: 0 15px;
-    }
+.container {
+  max-width: 900px;
+  margin: 30px auto 40px;
+  padding: 0 15px;
+}
 
-    header {
-      background: linear-gradient(135deg, var(--hvc-main) 0%, #3b0000 100%);
-      color: #fff;
-      padding: 18px 20px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-      margin-bottom: 24px;
-    }
+header {
+  background: linear-gradient(135deg, var(--hvc-main) 0%, #3b0000 100%);
+  color: #fff;
+  padding: 18px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  margin-bottom: 24px;
+}
 
-    .logo-circle {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Oswald', sans-serif;
-      font-size: 22px;
-      font-weight: 600;
-    }
+.logo-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+}
 
-    .logo-circle span {
-      line-height: 1;
-    }
+header h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 26px;
+  margin: 0 0 4px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 
-    header h1 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 26px;
-      margin: 0 0 4px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
+header p {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.9;
+}
 
-    header p {
-      margin: 0;
-      font-size: 13px;
-      opacity: 0.9;
-    }
+main {
+  background: var(--hvc-card-bg);
+  border-radius: 12px;
+  padding: 20px 18px 24px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
 
-    main {
-      background: var(--hvc-card-bg);
-      border-radius: 12px;
-      padding: 20px 18px 24px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-    }
+h2 {
+  font-family: 'Oswald', sans-serif;
+  color: var(--hvc-main);
+  margin-top: 0;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
 
-    h2 {
-      font-family: 'Oswald', sans-serif;
-      color: var(--hvc-main);
-      margin-top: 0;
-      margin-bottom: 10px;
-      letter-spacing: 0.5px;
-    }
+p {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
 
-    p {
-      margin-top: 0;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
+.hint {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 16px;
+}
 
-    .hint {
-      font-size: 12px;
-      color: #555;
-      margin-bottom: 16px;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 16px;
-      font-size: 14px;
-    }
+th, td {
+  padding: 8px 6px;
+  text-align: center;
+}
 
-    th, td {
-      padding: 8px 6px;
-      text-align: center;
-    }
+th {
+  background-color: var(--hvc-main);
+  color: #fff;
+  font-weight: 500;
+  border-bottom: 2px solid #4a0000;
+}
 
-    th {
-      background-color: var(--hvc-main);
-      color: #fff;
-      font-weight: 500;
-      border-bottom: 2px solid #4a0000;
-    }
+tr:nth-child(even) td { background-color: #fafafa; }
+tr:nth-child(odd) td { background-color: #ffffff; }
 
-    tr:nth-child(even) td {
-      background-color: #fafafa;
-    }
+td {
+  border-bottom: 1px solid var(--hvc-border);
+}
 
-    tr:nth-child(odd) td {
-      background-color: #ffffff;
-    }
+select {
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--hvc-border);
+  font-size: 14px;
+  min-width: 70px;
+}
 
-    td {
-      border-bottom: 1px solid var(--hvc-border);
-    }
+button {
+  background-color: var(--hvc-main);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
 
-    select {
-      padding: 4px 6px;
-      border-radius: 6px;
-      border: 1px solid var(--hvc-border);
-      font-size: 14px;
-      min-width: 70px;
-    }
+button:hover {
+  background-color: var(--hvc-main-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
 
-    button {
-      background-color: var(--hvc-main);
-      color: #fff;
-      border: none;
-      border-radius: 999px;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s ease;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
 
-    button:hover {
-      background-color: var(--hvc-main-light);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-    }
+.secondary-btn {
+  background-color: #ffffff;
+  color: var(--hvc-main);
+  border: 1px solid var(--hvc-main);
+  box-shadow: none;
+}
 
-    button:active {
-      transform: translateY(0);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    }
+.secondary-btn:hover {
+  background-color: #fbe9e9;
+}
 
-    .secondary-btn {
-      background-color: #ffffff;
-      color: var(--hvc-main);
-      border: 1px solid var(--hvc-main);
-      box-shadow: none;
-    }
+.danger-btn {
+  background-color: #c62828;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
 
-    .secondary-btn:hover {
-      background-color: #fbe9e9;
-    }
+.danger-btn:hover {
+  background-color: #e53935;
+}
 
-    .danger-btn {
-      background-color: #c62828;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-    }
+.hidden { display: none; }
 
-    .danger-btn:hover {
-      background-color: #e53935;
-    }
+.error {
+  color: #c62828;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
 
-    .hidden {
-      display: none;
-    }
+.success {
+  color: #2e7d32;
+  font-weight: 600;
+  font-size: 13px;
+  margin-top: 8px;
+}
 
-    .error {
-      color: #c62828;
-      font-weight: 600;
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
+#previewBox {
+  margin-top: 18px;
+  background-color: rgba(255,255,255,0.95);
+  border: 2px solid var(--hvc-main);
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+  text-align: center;
+}
 
-    .success {
-      color: #2e7d32;
-      font-weight: 600;
-      font-size: 13px;
-      margin-top: 8px;
-    }
+#previewTitle {
+  font-family: 'Oswald', sans-serif;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--hvc-main);
+  letter-spacing: 0.5px;
+}
 
-    #alreadyVoted {
-      margin-bottom: 10px;
-    }
+#previewImage {
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--hvc-border);
+}
 
-    #previewBox {
-      margin-top: 18px;
-      background-color: rgba(255,255,255,0.95);
-      border: 2px solid var(--hvc-main);
-      border-radius: 10px;
-      padding: 14px;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
-      text-align: center;
-    }
+hr {
+  border: none;
+  border-top: 1px solid var(--hvc-border);
+  margin: 20px 0;
+}
 
-    #previewTitle {
-      font-family: 'Oswald', sans-serif;
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: var(--hvc-main);
-      letter-spacing: 0.5px;
-    }
+.admin-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
 
-    #previewImage {
-      max-width: 100%;
-      border-radius: 8px;
-      border: 1px solid var(--hvc-border);
-    }
+.vote-password-box {
+  border: 1px solid var(--hvc-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  background: #fafafa;
+  font-size: 13px;
+}
 
-    hr {
-      border: none;
-      border-top: 1px solid var(--hvc-border);
-      margin: 20px 0;
-    }
+.vote-password-box input {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--hvc-border);
+  font-size: 13px;
+  min-width: 160px;
+  margin-right: 8px;
+}
 
-    #resultsSection {
-      margin-top: 10px;
-    }
+.locked {
+  opacity: 0.4;
+  pointer-events: none;
+}
 
-    #resultsTable th {
-      font-size: 13px;
-    }
-
-    #resultsTable td {
-      font-size: 13px;
-    }
-
-    .admin-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-      margin-bottom: 6px;
-      flex-wrap: wrap;
-    }
-
-    #trainerPassword {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid var(--hvc-border);
-      font-size: 13px;
-      min-width: 160px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background-color: #fbe9e9;
-      color: var(--hvc-main);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Abstimm-Passwort-Bereich */
-    .vote-password-box {
-      border: 1px solid var(--hvc-border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-bottom: 16px;
-      background: #fafafa;
-      font-size: 13px;
-    }
-
-    .vote-password-box input {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid var(--hvc-border);
-      font-size: 13px;
-      min-width: 160px;
-      margin-right: 8px;
-    }
-
-    .locked {
-      opacity: 0.4;
-      pointer-events: none;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-      .logo-circle {
-        margin-bottom: 4px;
-      }
-      table {
-        font-size: 13px;
-      }
-      button {
-        width: 100%;
-        text-align: center;
-      }
-      .trainer-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      #trainerPassword {
-        width: 100%;
-      }
-      .vote-password-box input {
-        width: 100%;
-        margin-bottom: 8px;
-      }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <header>
-      <div class="logo-circle">
-        <span>HVC</span>
-      </div>
-      <div>
-        <h1>HVC Trikot-Abstimmung</h1>
-        <p>Team-Voting für das neue Trikotdesign – fair, anonym und jede Stimme zählt gleich viel.</p>
-      </div>
-      <div>
-        <span class="badge">HVC • VOLLEYBALL</span>
-      </div>
-    </header>
+<div class="container">
 
-    <main>
-      <div id="alreadyVoted" class="error hidden">
-        Du hast bereits abgestimmt. Danke für deine Teilnahme!
-      </div>
-
-      <!-- Abstimm-Passwort -->
-      <div class="vote-password-box" id="votePwBox">
-        <strong>Schritt 1:</strong> Passwort eingeben, um abstimmen zu können.<br>
-        <input type="password" id="votePassword" placeholder="Passwort eingeben">
-        <button type="button" id="checkVotePasswordBtn">Freischalten</button>
-        <span id="votePwInfo"></span>
-      </div>
-
-      <!-- Abstimmungsformular -->
-      <form id="voteForm" class="locked">
-        <h2>Bewertung der Designs</h2>
-        <p>Bewerte jedes Design mit einer Zahl von <strong>1 (beste)</strong> bis <strong>6 (schlechteste)</strong>.</p>
-        <p class="hint">Hinweis: Du kannst dir jedes Design über den „Vorschau“-Button anzeigen lassen.</p>
-
-        <table>
-          <tr><th>Design</th><th>Bewertung</th></tr>
-
-          <!-- DESIGN A -->
-          <tr>
-            <td>
-              Design A<br>
-              <button type="button" class="secondary-btn" onclick="togglePreview('A')">Vorschau anzeigen</button>
-            </td>
-            <td>
-              <select name="A" required>
-                <option value="">–</option><option>1</option><option>2</option><option>3</option>
-                <option>4</option><option>5</option><option>6</option>
-              </select>
-            </td>
-          </tr>
-
-          <!-- DESIGN B -->
-          <tr>
-            <td>
-              Design B<br>
-              <button type="button" class="secondary-btn" onclick="togglePreview('B')">Vorschau anzeigen</button>
-            </td>
-            <td>
-              <select name="B" required>
-                <option value="">–</option><option>1</option><option>2</option><option>3</option>
-                <option>4</option><option>5</option><option>6</option>
-              </select>
-            </td>
-          </tr>
-
-          <!-- DESIGN C -->
-          <tr>
-            <td>
-              Design C<br>
-              <button type="button" class="secondary-btn" onclick="togglePreview('C')">Vorschau anzeigen</button>
-            </td>
-            <td>
-              <select name="C" required>
-                <option value="">–</option><option>1</option><option>2</option><option>3</option>
-                <option>4</option><option>5</option><option>6</option>
-              </select>
-            </td>
-          </tr>
-
-          <!-- DESIGN D -->
-          <tr>
-            <td>
-              Design D<br>
-              <button type="button" class="secondary-btn" onclick="togglePreview('D')">Vorschau anzeigen</button>
-            </td>
-            <td>
-              <select name="D" required>
-                <option value="">–</option><option>1</option><option>2</option><option>3</option>
-                <option>4</option><option>5</option><option>6</option>
-              </select>
-            </td>
-          </tr>
-
-          <!-- DESIGN E -->
-          <tr>
-            <td>
-              Design E<br>
-              <button type="button" class="secondary-btn" onclick="togglePreview('E')">Vorschau anzeigen</button>
-            </td>
-            <td>
-              <select name="E" required>
-                <option value="">–</option><option>1</option><option>2</option><option>3</option>
-                <option>4</option><option>5</option><option>6</option>
-              </select>
-            </td>
-          </tr>
-
-          <!-- DESIGN F -->
-          <tr>
-            <td>
-              Design F<br>
-              <button type="button" class="secondary-btn" onclick="togglePreview('F')">Vorschau anzeigen</button>
-            </td>
-            <td>
-              <select name="F" required>
-                <option value="">–</option><option>1</option><option>2</option><option>3</option>
-                <option>4</option><option>5</option><option>6</option>
-              </select>
-            </td>
-          </tr>
-
-          <!-- DESIGN G -->
-          <tr>
-            <td>
-              Design G<br>
-              <button type="button" class="secondary-btn" onclick="togglePreview('G')">Vorschau anzeigen</button>
-            </td>
-            <td>
-              <select name="G" required>
-                <option value="">–</option><option>1</option><option>2</option><option>3</option>
-                <option>4</option><option>5</option><option>6</option>
-              </select>
-            </td>
-          </tr>
-        </table>
-
-        <!-- Bildvorschau -->
-        <div id="previewBox" class="hidden">
-          <h3 id="previewTitle"></h3>
-          <img id="previewImage" src="" alt="Vorschau" data-current="">
-        </div>
-
-        <button type="submit">Abstimmen</button>
-      </form>
-
-      <hr>
-
-      <!-- Trainer-Bereich -->
-      <h2>Trainer-Bereich</h2>
-
-      <button id="showResultsBtn" class="secondary-btn">Ergebnisse anzeigen (Passwort)</button>
-
-      <div id="passwordBox" class="hidden">
-        <div class="admin-row">
-          <input type="password" id="trainerPassword" placeholder="Passwort">
-          <button id="checkPasswordBtn">Bestätigen</button>
-        </div>
-        <div id="pwError" class="error hidden">Falsches Passwort.</div>
-      </div>
-
-      <!-- Ergebnisbereich -->
-      <div id="resultsSection" class="hidden">
-        <h2>Durchschnittswerte</h2>
-        <table id="resultsTable">
-          <tr><th>Design</th><th>Durchschnitt</th><th>Stimmen</th></tr>
-        </table>
-
-        <button id="resetBtn" class="danger-btn">Alle Stimmen löschen</button>
-        <div id="resetMsg" class="success hidden">Alle Stimmen wurden gelöscht.</div>
-      </div>
-    </main>
+<header>
+  <div class="logo-circle"><span>HVC</span></div>
+  <div>
+    <h1>HVC Trikot-Abstimmung</h1>
+    <p>Team-Voting für das neue Trikotdesign – fair, anonym und jede Stimme zählt gleich viel.</p>
   </div>
-  
+  <div><span class="badge">HVC · VOLLEYBALL</span></div>
+</header>
+
+<main>
+
+<div id="alreadyVoted" class="error hidden">
+  Du hast bereits abgestimmt. Danke für deine Teilnahme!
+</div>
+
+<div class="vote-password-box" id="votePwBox">
+  <strong>Schritt 1:</strong> Passwort eingeben, um abstimmen zu können.<br>
+  <input type="password" id="votePassword" placeholder="Passwort eingeben">
+  <button type="button" id="checkVotePasswordBtn">Freischalten</button>
+  <span id="votePwInfo"></span>
+</div>
+
+<form id="voteForm" class="locked">
+  <h2>Bewertung der Designs</h2>
+  <p>Bewerte jedes Design mit einer Zahl von <strong>1 (beste)</strong> bis <strong>6 (schlechteste)</strong>.</p>
+  <p class="hint">Hinweis: Du kannst dir jedes Design über den „Vorschau“-Button anzeigen lassen.</p>
+
+  <table>
+    <tr><th>Design</th><th>Bewertung</th></tr>
+
+    <!-- DESIGN A -->
+    <tr>
+      <td>Design A<br><button type="button" class="secondary-btn" onclick="togglePreview('A')">Vorschau anzeigen</button></td>
+      <td><select name="A" required><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></td>
+    </tr>
+
+    <!-- DESIGN B -->
+    <tr>
+      <td>Design B<br><button type="button" class="secondary-btn" onclick="togglePreview('B')">Vorschau anzeigen</button></td>
+      <td><select name="B" required><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></td>
+    </tr>
+
+    <!-- DESIGN C -->
+    <tr>
+      <td>Design C<br><button type="button" class="secondary-btn" onclick="togglePreview('C')">Vorschau anzeigen</button></td>
+      <td><select name="C" required><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></td>
+    </tr>
+
+    <!-- DESIGN D -->
+    <tr>
+      <td>Design D<br><button type="button" class="secondary-btn" onclick="togglePreview('D')">Vorschau anzeigen</button></td>
+      <td><select name="D" required><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></td>
+    </tr>
+
+    <!-- DESIGN E -->
+    <tr>
+      <td>Design E<br><button type="button" class="secondary-btn" onclick="togglePreview('E')">Vorschau anzeigen</button></td>
+      <td><select name="E" required><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></td>
+    </tr>
+
+    <!-- DESIGN F -->
+    <tr>
+      <td>Design F<br><button type="button" class="secondary-btn" onclick="togglePreview('F')">Vorschau anzeigen</button></td>
+      <td><select name="F" required><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></td>
+    </tr>
+
+    <!-- DESIGN G -->
+    <tr>
+      <td>Design G<br><button type="button" class="secondary-btn" onclick="togglePreview('G')">Vorschau anzeigen</button></td>
+      <td><select name="G" required><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></td>
+    </tr>
+  </table>
+
+  <!-- Bildvorschau -->
+  <div id="previewBox" class="hidden">
+    <h3 id="previewTitle"></h3>
+    <img id="previewImage" src="" alt="Vorschau" data-current="">
+  </div>
+
+  <button type="submit">Abstimmen</button>
+</form>
+
+<hr>
+
+<h2>Trainer-Bereich</h2>
+
+<button id="showResultsBtn" class="secondary-btn">Ergebnisse anzeigen (Passwort)</button>
+
+<div id="passwordBox" class="hidden">
+  <div class="admin-row">
+    <input type="password" id="trainerPassword" placeholder="Passwort">
+    <button id="checkPasswordBtn">Bestätigen</button>
+  </div>
+  <div id="pwError" class="error hidden">Falsches Passwort.</div>
+</div>
+
+<div id="resultsSection" class="hidden">
+  <h2>Durchschnittswerte</h2>
+  <table id="resultsTable">
+    <tr><th>Design</th><th>Durchschnitt</th><th>Stimmen</th></tr>
+  </table>
+
+  <button id="resetBtn" class="danger-btn">Alle Stimmen löschen</button>
+  <div id="resetMsg" class="success hidden">Alle Stimmen wurden gelöscht.</div>
+</div>
+
+</main>
+</div>
 <script>
 const TRAINER_PASSWORD = "hvc2025";
 const designs = ["A", "B", "C", "D", "E", "F", "G"];
@@ -632,7 +495,8 @@ document.getElementById("resetBtn").onclick = async () => {
   const table = document.getElementById("resultsTable");
   while (table.rows.length > 1) table.deleteRow(1);
 };
-  // Bildvorschau
+
+// Bildvorschau
 function togglePreview(design) {
   const box = document.getElementById("previewBox");
   const img = document.getElementById("previewImage");
@@ -646,7 +510,7 @@ function togglePreview(design) {
     return;
   }
 
-  // Bildpfad (muss exakt so heißen wie deine Dateien)
+  // Bildpfad
   img.src = `images/design_${design}.png`;
   img.dataset.current = design;
 
@@ -654,12 +518,9 @@ function togglePreview(design) {
   box.classList.remove("hidden");
 }
 
-// WICHTIG: Funktion global verfügbar machen
 window.togglePreview = togglePreview;
-
 </script>
-
-
+  
 </body>
 <footer style="text-align:center; font-size:12px; opacity:0.7; margin-top:20px;">
   © 2026 HVC Volleyballteam – interne Nutzung. Keine Weitergabe.
