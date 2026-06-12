@@ -507,23 +507,25 @@
       </div>
     </main>
   </div>
-
- <script>
+  
+<script>
 const TRAINER_PASSWORD = "hvc2025";
 const designs = ["A", "B", "C", "D", "E", "F", "G"];
 
-// Deine Google-WebApp-URL:
+// Deine Web-App-URL:
 const API_URL = "https://script.google.com/macros/s/AKfycbxgJvwvbyFK5HF7WY--sxivB2zLvIn4rUKjmgb5tVFG-yr0giBgzc-rg1xD9zQB5ICh/exec";
 
-// Lokale Markierung, ob jemand schon abgestimmt hat
 let voteUnlocked = false;
 
-// Prüfen, ob Gerät schon abgestimmt hat
+// Gerät hat schon abgestimmt?
 if (localStorage.getItem("voted") === "true") {
   document.getElementById("voteForm").classList.add("hidden");
   document.getElementById("alreadyVoted").classList.remove("hidden");
   document.getElementById("votePwBox").classList.add("hidden");
 }
+
+const form = document.getElementById("voteForm");
+const resultsTable = document.getElementById("resultsTable");
 
 // Abstimm-Passwort prüfen
 document.getElementById("checkVotePasswordBtn").onclick = () => {
@@ -532,7 +534,7 @@ document.getElementById("checkVotePasswordBtn").onclick = () => {
 
   if (pw === "HVC") {
     voteUnlocked = true;
-    document.getElementById("voteForm").classList.remove("locked");
+    form.classList.remove("locked");
     info.textContent = "Freigeschaltet.";
     info.style.color = "#2e7d32";
   } else {
@@ -542,14 +544,15 @@ document.getElementById("checkVotePasswordBtn").onclick = () => {
   }
 };
 
-// 🔥 Funktion zum Speichern einer Stimme in Google Sheets
-async function saveVote(design, rating) {
+// Stimme an API senden
+async function sendVote(design, rating) {
   const deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
   localStorage.setItem("deviceId", deviceId);
 
   await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
+      action: "vote",
       design: design,
       rating: rating,
       deviceId: deviceId
@@ -558,7 +561,7 @@ async function saveVote(design, rating) {
 }
 
 // Formular absenden
-document.getElementById("voteForm").addEventListener("submit", async function(e) {
+form.addEventListener("submit", async function(e) {
   e.preventDefault();
 
   if (!voteUnlocked) {
@@ -568,19 +571,16 @@ document.getElementById("voteForm").addEventListener("submit", async function(e)
 
   if (localStorage.getItem("voted") === "true") return;
 
-  const data = new FormData(this);
+  const data = new FormData(form);
 
-  // Jede Bewertung einzeln speichern
   for (const d of designs) {
     const rating = parseInt(data.get(d));
-    await saveVote(d, rating);
+    await sendVote(d, rating);
   }
 
-  // Gerät markieren
   localStorage.setItem("voted", "true");
 
-  // UI aktualisieren
-  document.getElementById("voteForm").classList.add("hidden");
+  form.classList.add("hidden");
   document.getElementById("alreadyVoted").classList.remove("hidden");
   document.getElementById("votePwBox").classList.add("hidden");
 });
@@ -605,15 +605,14 @@ function togglePreview(design) {
 }
 window.togglePreview = togglePreview;
 
-// Trainerbereich öffnen
+// Trainerbereich anzeigen
 document.getElementById("showResultsBtn").onclick = () => {
   document.getElementById("passwordBox").classList.remove("hidden");
 };
 
-// Trainerpasswort prüfen
+// Trainer-Passwort prüfen
 document.getElementById("checkPasswordBtn").onclick = async () => {
   const pw = document.getElementById("trainerPassword").value;
-
   if (pw === TRAINER_PASSWORD) {
     document.getElementById("resultsSection").classList.remove("hidden");
     document.getElementById("pwError").classList.add("hidden");
@@ -623,36 +622,17 @@ document.getElementById("checkPasswordBtn").onclick = async () => {
   }
 };
 
-// 🔥 Ergebnisse aus Google Sheets laden
+// Ergebnisse laden (fertig aggregiert aus Apps Script)
 async function loadResults() {
-  const res = await fetch(API_URL);
-  const rows = await res.json();
-
-  const resultsTable = document.getElementById("resultsTable");
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ action: "results" })
+  });
+  const resultList = await res.json();
 
   while (resultsTable.rows.length > 1) {
     resultsTable.deleteRow(1);
   }
-
-  const stats = {};
-
-  designs.forEach(d => stats[d] = []);
-
-  rows.forEach(r => {
-    stats[r.design].push(Number(r.rating));
-  });
-
-  const resultList = designs.map(d => {
-    const arr = stats[d];
-    const avg = arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
-    return { design: d, avg: avg, count: arr.length };
-  });
-
-  resultList.sort((a, b) => {
-    if (a.avg === null) return 1;
-    if (b.avg === null) return -1;
-    return a.avg - b.avg;
-  });
 
   resultList.forEach(item => {
     const row = resultsTable.insertRow();
@@ -662,17 +642,24 @@ async function loadResults() {
   });
 }
 
+// Reset – wirklich in Google Sheets
 document.getElementById("resetBtn").onclick = async () => {
   await fetch(API_URL, {
     method: "POST",
-    body: JSON.stringify({ command: "reset" })
+    body: JSON.stringify({ action: "reset" })
   });
 
+  // lokale Markierung entfernen
+  localStorage.removeItem("voted");
   document.getElementById("resetMsg").classList.remove("hidden");
+
+  // Tabelle im Trainerbereich leeren
+  while (resultsTable.rows.length > 1) {
+    resultsTable.deleteRow(1);
+  }
 };
-
-
 </script>
+
 
 </body>
 <footer style="text-align:center; font-size:12px; opacity:0.7; margin-top:20px;">
