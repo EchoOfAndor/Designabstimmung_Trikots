@@ -662,11 +662,15 @@ async function loadResults() {
   });
 }
 
-// Reset (löscht nur lokal, nicht in Sheets)
-document.getElementById("resetBtn").onclick = () => {
-  localStorage.removeItem("voted");
+document.getElementById("resetBtn").onclick = async () => {
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ command: "reset" })
+  });
+
   document.getElementById("resetMsg").classList.remove("hidden");
 };
+
 </script>
 
 </body>
