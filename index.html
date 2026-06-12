@@ -371,6 +371,7 @@ hr {
 
 </main>
 </div>
+
 <script>
 const TRAINER_PASSWORD = "hvc2025";
 const designs = ["A", "B", "C", "D", "E", "F", "G"];
@@ -424,13 +425,19 @@ async function sendVote(design, rating) {
 document.getElementById("voteForm").addEventListener("submit", async e => {
   e.preventDefault();
 
+  const form = document.getElementById("voteForm");
+
+  // HARTER Schutz: wenn schon gesperrt → sofort raus
+  if (form.classList.contains("locked")) return;
+
   // Schutz: Passwort + bereits abgestimmt?
   if (!voteUnlocked) return alert("Passwort eingeben.");
   if (localStorage.getItem("voted") === "true") return;
 
   // Anti‑Spam: Formular sofort sperren
-  document.getElementById("voteForm").classList.add("locked");
-  document.querySelector("#voteForm button[type='submit']").disabled = true;
+  form.classList.add("locked");
+  const submitBtn = form.querySelector("button[type='submit']");
+  if (submitBtn) submitBtn.disabled = true;
 
   const data = new FormData(e.target);
 
@@ -442,7 +449,7 @@ document.getElementById("voteForm").addEventListener("submit", async e => {
   localStorage.setItem("voted", "true");
 
   // UI umschalten
-  document.getElementById("voteForm").classList.add("hidden");
+  form.classList.add("hidden");
   document.getElementById("alreadyVoted").classList.remove("hidden");
   document.getElementById("votePwBox").classList.add("hidden");
 });
@@ -509,7 +516,6 @@ function togglePreview(design) {
   const img = document.getElementById("previewImage");
   const title = document.getElementById("previewTitle");
 
-  // Wenn bereits offen und gleiches Bild → schließen
   if (!box.classList.contains("hidden") && img.dataset.current === design) {
     box.classList.add("hidden");
     img.src = "";
@@ -517,7 +523,6 @@ function togglePreview(design) {
     return;
   }
 
-  // Bildpfad
   img.src = `images/design_${design}.png`;
   img.dataset.current = design;
 
@@ -527,6 +532,7 @@ function togglePreview(design) {
 
 window.togglePreview = togglePreview;
 </script>
+
 
   
 </body>
