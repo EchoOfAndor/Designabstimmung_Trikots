@@ -632,6 +632,31 @@ document.getElementById("resetBtn").onclick = async () => {
   const table = document.getElementById("resultsTable");
   while (table.rows.length > 1) table.deleteRow(1);
 };
+  // Bildvorschau
+function togglePreview(design) {
+  const box = document.getElementById("previewBox");
+  const img = document.getElementById("previewImage");
+  const title = document.getElementById("previewTitle");
+
+  // Wenn bereits offen und gleiches Bild → schließen
+  if (!box.classList.contains("hidden") && img.dataset.current === design) {
+    box.classList.add("hidden");
+    img.src = "";
+    img.dataset.current = "";
+    return;
+  }
+
+  // Bildpfad (muss exakt so heißen wie deine Dateien)
+  img.src = `images/design_${design}.png`;
+  img.dataset.current = design;
+
+  title.textContent = "Vorschau: Design " + design;
+  box.classList.remove("hidden");
+}
+
+// WICHTIG: Funktion global verfügbar machen
+window.togglePreview = togglePreview;
+
 </script>
 
 
