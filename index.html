@@ -508,102 +508,85 @@
     </main>
   </div>
 
-  <script>
-    const TRAINER_PASSWORD = "hvc2025"; // Trainer-Passwort
-    const designs = ["A", "B", "C", "D", "E", "F", "G"];
+ <script>
+const TRAINER_PASSWORD = "hvc2025";
+const designs = ["A", "B", "C", "D", "E", "F", "G"];
 
-    let votes = JSON.parse(localStorage.getItem("votes")) || {
-      A: [], B: [], C: [], D: [], E: [], F: [], G: []
-    };
+// Deine Google-WebApp-URL:
+const API_URL = "https://script.google.com/macros/s/AKfycbxgJvwvbyFK5HF7WY--sxivB2zLvIn4rUKjmgb5tVFG-yr0giBgzc-rg1xD9zQB5ICh/exec";
 
-    let voteUnlocked = false;
+// Lokale Markierung, ob jemand schon abgestimmt hat
+let voteUnlocked = false;
 
-    if (localStorage.getItem("voted") === "true") {
-      document.getElementById("voteForm").classList.add("hidden");
-      document.getElementById("alreadyVoted").classList.remove("hidden");
-      document.getElementById("votePwBox").classList.add("hidden");
-    }
+// Prüfen, ob Gerät schon abgestimmt hat
+if (localStorage.getItem("voted") === "true") {
+  document.getElementById("voteForm").classList.add("hidden");
+  document.getElementById("alreadyVoted").classList.remove("hidden");
+  document.getElementById("votePwBox").classList.add("hidden");
+}
 
-    const form = document.getElementById("voteForm");
-    const resultsTable = document.getElementById("resultsTable");
+// Abstimm-Passwort prüfen
+document.getElementById("checkVotePasswordBtn").onclick = () => {
+  const pw = document.getElementById("votePassword").value.trim();
+  const info = document.getElementById("votePwInfo");
 
-    // Abstimm-Passwort prüfen
-    document.getElementById("checkVotePasswordBtn").onclick = () => {
-      const pw = document.getElementById("votePassword").value.trim();
-      const info = document.getElementById("votePwInfo");
+  if (pw === "HVC") {
+    voteUnlocked = true;
+    document.getElementById("voteForm").classList.remove("locked");
+    info.textContent = "Freigeschaltet.";
+    info.style.color = "#2e7d32";
+  } else {
+    voteUnlocked = false;
+    info.textContent = "Falsches Passwort.";
+    info.style.color = "#c62828";
+  }
+};
 
-      if (pw === "HVC") {
-        voteUnlocked = true;
-        form.classList.remove("locked");
-        info.textContent = "Freigeschaltet.";
-        info.style.color = "#2e7d32";
-      } else {
-        voteUnlocked = false;
-        info.textContent = "Falsches Passwort.";
-        info.style.color = "#c62828";
-      }
-    };
+// 🔥 Funktion zum Speichern einer Stimme in Google Sheets
+async function saveVote(design, rating) {
+  const deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
+  localStorage.setItem("deviceId", deviceId);
 
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      design: design,
+      rating: rating,
+      deviceId: deviceId
+    })
+  });
+}
 
-      if (!voteUnlocked) {
-        alert("Du musst zuerst das richtige Passwort eingeben, um abstimmen zu können.");
-        return;
-      }
+// Formular absenden
+document.getElementById("voteForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
 
-      if (localStorage.getItem("voted") === "true") return;
+  if (!voteUnlocked) {
+    alert("Du musst zuerst das richtige Passwort eingeben.");
+    return;
+  }
 
-      const data = new FormData(form);
+  if (localStorage.getItem("voted") === "true") return;
 
-      designs.forEach(d => {
-        votes[d].push(parseInt(data.get(d)));
-      });
+  const data = new FormData(this);
 
-      localStorage.setItem("votes", JSON.stringify(votes));
-      localStorage.setItem("voted", "true");
+  // Jede Bewertung einzeln speichern
+  for (const d of designs) {
+    const rating = parseInt(data.get(d));
+    await saveVote(d, rating);
+  }
 
-      form.classList.add("hidden");
-      document.getElementById("alreadyVoted").classList.remove("hidden");
-      document.getElementById("votePwBox").classList.add("hidden");
-    });
+  // Gerät markieren
+  localStorage.setItem("voted", "true");
 
-    function updateResults() {
-      while (resultsTable.rows.length > 1) {
-        resultsTable.deleteRow(1);
-      }
+  // UI aktualisieren
+  document.getElementById("voteForm").classList.add("hidden");
+  document.getElementById("alreadyVoted").classList.remove("hidden");
+  document.getElementById("votePwBox").classList.add("hidden");
+});
 
-      let resultList = designs.map(d => {
-        const arr = votes[d];
-        let avg = null;
-
-        if (arr.length > 0) {
-          avg = arr.reduce((a, b) => a + b, 0) / arr.length;
-        }
-
-        return {
-          design: d,
-          avg: avg,
-          count: arr.length
-        };
-      });
-
-      resultList.sort((a, b) => {
-        if (a.avg === null) return 1;
-        if (b.avg === null) return -1;
-        return a.avg - b.avg;
-      });
-
-      resultList.forEach(item => {
-        const row = resultsTable.insertRow();
-        row.insertCell().textContent = "Design " + item.design;
-        row.insertCell().textContent = item.avg === null ? "-" : item.avg.toFixed(2);
-        row.insertCell().textContent = item.count;
-      });
-    }
-
-    // Bildvorschau
-   function togglePreview(design) {
+// Bildvorschau
+function togglePreview(design) {
   const box = document.getElementById("previewBox");
   const img = document.getElementById("previewImage");
   const title = document.getElementById("previewTitle");
@@ -615,38 +598,77 @@
     return;
   }
 
-  // Deine Bildnamen:
-  img.src = `images/design_${design}.png`; 
+  img.src = `images/design_${design}.png`;
   img.dataset.current = design;
   title.textContent = "Vorschau: Design " + design;
   box.classList.remove("hidden");
 }
+window.togglePreview = togglePreview;
 
-    window.togglePreview = togglePreview;
+// Trainerbereich öffnen
+document.getElementById("showResultsBtn").onclick = () => {
+  document.getElementById("passwordBox").classList.remove("hidden");
+};
 
-    document.getElementById("showResultsBtn").onclick = () => {
-      document.getElementById("passwordBox").classList.remove("hidden");
-    };
+// Trainerpasswort prüfen
+document.getElementById("checkPasswordBtn").onclick = async () => {
+  const pw = document.getElementById("trainerPassword").value;
 
-    document.getElementById("checkPasswordBtn").onclick = () => {
-      const pw = document.getElementById("trainerPassword").value;
-      if (pw === TRAINER_PASSWORD) {
-        document.getElementById("resultsSection").classList.remove("hidden");
-        document.getElementById("pwError").classList.add("hidden");
-        updateResults();
-      } else {
-        document.getElementById("pwError").classList.remove("hidden");
-      }
-    };
+  if (pw === TRAINER_PASSWORD) {
+    document.getElementById("resultsSection").classList.remove("hidden");
+    document.getElementById("pwError").classList.add("hidden");
+    await loadResults();
+  } else {
+    document.getElementById("pwError").classList.remove("hidden");
+  }
+};
 
-    document.getElementById("resetBtn").onclick = () => {
-      votes = { A: [], B: [], C: [], D: [], E: [], F: [], G: [] };
-      localStorage.setItem("votes", JSON.stringify(votes));
-      localStorage.removeItem("voted");
-      updateResults();
-      document.getElementById("resetMsg").classList.remove("hidden");
-    };
-  </script>
+// 🔥 Ergebnisse aus Google Sheets laden
+async function loadResults() {
+  const res = await fetch(API_URL);
+  const rows = await res.json();
+
+  const resultsTable = document.getElementById("resultsTable");
+
+  while (resultsTable.rows.length > 1) {
+    resultsTable.deleteRow(1);
+  }
+
+  const stats = {};
+
+  designs.forEach(d => stats[d] = []);
+
+  rows.forEach(r => {
+    stats[r.design].push(Number(r.rating));
+  });
+
+  const resultList = designs.map(d => {
+    const arr = stats[d];
+    const avg = arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
+    return { design: d, avg: avg, count: arr.length };
+  });
+
+  resultList.sort((a, b) => {
+    if (a.avg === null) return 1;
+    if (b.avg === null) return -1;
+    return a.avg - b.avg;
+  });
+
+  resultList.forEach(item => {
+    const row = resultsTable.insertRow();
+    row.insertCell().textContent = "Design " + item.design;
+    row.insertCell().textContent = item.avg === null ? "-" : item.avg.toFixed(2);
+    row.insertCell().textContent = item.count;
+  });
+}
+
+// Reset (löscht nur lokal, nicht in Sheets)
+document.getElementById("resetBtn").onclick = () => {
+  localStorage.removeItem("voted");
+  document.getElementById("resetMsg").classList.remove("hidden");
+};
+</script>
+
 </body>
 <footer style="text-align:center; font-size:12px; opacity:0.7; margin-top:20px;">
   © 2026 HVC Volleyballteam – interne Nutzung. Keine Weitergabe.
