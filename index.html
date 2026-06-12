@@ -546,6 +546,8 @@ async function sendVote(design, rating) {
 
   await fetch(API_URL, {
     method: "POST",
+    mode: "cors",
+    redirect: "follow",
     body: JSON.stringify({
       action: "vote",
       design: design,
@@ -597,6 +599,8 @@ document.getElementById("checkPasswordBtn").onclick = async () => {
 async function loadResults() {
   const res = await fetch(API_URL, {
     method: "POST",
+    mode: "cors",
+    redirect: "follow",
     body: JSON.stringify({ action: "results" })
   });
 
@@ -617,6 +621,8 @@ async function loadResults() {
 document.getElementById("resetBtn").onclick = async () => {
   await fetch(API_URL, {
     method: "POST",
+    mode: "cors",
+    redirect: "follow",
     body: JSON.stringify({ action: "reset" })
   });
 
@@ -627,6 +633,7 @@ document.getElementById("resetBtn").onclick = async () => {
   while (table.rows.length > 1) table.deleteRow(1);
 };
 </script>
+
 
 </body>
 <footer style="text-align:center; font-size:12px; opacity:0.7; margin-top:20px;">
