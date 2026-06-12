@@ -424,8 +424,13 @@ async function sendVote(design, rating) {
 document.getElementById("voteForm").addEventListener("submit", async e => {
   e.preventDefault();
 
+  // Schutz: Passwort + bereits abgestimmt?
   if (!voteUnlocked) return alert("Passwort eingeben.");
   if (localStorage.getItem("voted") === "true") return;
+
+  // Anti‑Spam: Formular sofort sperren
+  document.getElementById("voteForm").classList.add("locked");
+  document.querySelector("#voteForm button[type='submit']").disabled = true;
 
   const data = new FormData(e.target);
 
@@ -433,8 +438,10 @@ document.getElementById("voteForm").addEventListener("submit", async e => {
     await sendVote(d, Number(data.get(d)));
   }
 
+  // Dauerhaft sperren
   localStorage.setItem("voted", "true");
 
+  // UI umschalten
   document.getElementById("voteForm").classList.add("hidden");
   document.getElementById("alreadyVoted").classList.remove("hidden");
   document.getElementById("votePwBox").classList.add("hidden");
@@ -520,6 +527,7 @@ function togglePreview(design) {
 
 window.togglePreview = togglePreview;
 </script>
+
   
 </body>
 <footer style="text-align:center; font-size:12px; opacity:0.7; margin-top:20px;">
