@@ -511,30 +511,25 @@
 <script>
 const TRAINER_PASSWORD = "hvc2025";
 const designs = ["A", "B", "C", "D", "E", "F", "G"];
-
-// Deine Web-App-URL:
 const API_URL = "https://script.google.com/macros/s/AKfycbxgJvwvbyFK5HF7WY--sxivB2zLvIn4rUKjmgb5tVFG-yr0giBgzc-rg1xD9zQB5ICh/exec";
 
 let voteUnlocked = false;
 
-// Gerät hat schon abgestimmt?
+// Bereits abgestimmt?
 if (localStorage.getItem("voted") === "true") {
   document.getElementById("voteForm").classList.add("hidden");
   document.getElementById("alreadyVoted").classList.remove("hidden");
   document.getElementById("votePwBox").classList.add("hidden");
 }
 
-const form = document.getElementById("voteForm");
-const resultsTable = document.getElementById("resultsTable");
-
-// Abstimm-Passwort prüfen
+// Abstimm-Passwort
 document.getElementById("checkVotePasswordBtn").onclick = () => {
   const pw = document.getElementById("votePassword").value.trim();
   const info = document.getElementById("votePwInfo");
 
   if (pw === "HVC") {
     voteUnlocked = true;
-    form.classList.remove("locked");
+    document.getElementById("voteForm").classList.remove("locked");
     info.textContent = "Freigeschaltet.";
     info.style.color = "#2e7d32";
   } else {
@@ -544,7 +539,7 @@ document.getElementById("checkVotePasswordBtn").onclick = () => {
   }
 };
 
-// Stimme an API senden
+// Stimme senden
 async function sendVote(design, rating) {
   const deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
   localStorage.setItem("deviceId", deviceId);
@@ -561,105 +556,77 @@ async function sendVote(design, rating) {
 }
 
 // Formular absenden
-form.addEventListener("submit", async function(e) {
+document.getElementById("voteForm").addEventListener("submit", async e => {
   e.preventDefault();
 
-  if (!voteUnlocked) {
-    alert("Du musst zuerst das richtige Passwort eingeben.");
-    return;
-  }
-
+  if (!voteUnlocked) return alert("Passwort eingeben.");
   if (localStorage.getItem("voted") === "true") return;
 
-  const data = new FormData(form);
+  const data = new FormData(e.target);
 
   for (const d of designs) {
-    const rating = parseInt(data.get(d));
-    await sendVote(d, rating);
+    await sendVote(d, Number(data.get(d)));
   }
 
   localStorage.setItem("voted", "true");
 
-  form.classList.add("hidden");
+  document.getElementById("voteForm").classList.add("hidden");
   document.getElementById("alreadyVoted").classList.remove("hidden");
   document.getElementById("votePwBox").classList.add("hidden");
 });
 
-// Bildvorschau
-function togglePreview(design) {
-  const box = document.getElementById("previewBox");
-  const img = document.getElementById("previewImage");
-  const title = document.getElementById("previewTitle");
-
-  if (!box.classList.contains("hidden") && img.dataset.current === design) {
-    box.classList.add("hidden");
-    img.src = "";
-    img.dataset.current = "";
-    return;
-  }
-
-  img.src = `images/design_${design}.png`;
-  img.dataset.current = design;
-  title.textContent = "Vorschau: Design " + design;
-  box.classList.remove("hidden");
-}
-window.togglePreview = togglePreview;
-
-// Trainerbereich anzeigen
+// Trainerbereich
 document.getElementById("showResultsBtn").onclick = () => {
   document.getElementById("passwordBox").classList.remove("hidden");
 };
 
-// Trainer-Passwort prüfen
 document.getElementById("checkPasswordBtn").onclick = async () => {
   const pw = document.getElementById("trainerPassword").value;
-  if (pw === TRAINER_PASSWORD) {
-    document.getElementById("resultsSection").classList.remove("hidden");
-    document.getElementById("pwError").classList.add("hidden");
-    await loadResults();
-  } else {
+  if (pw !== TRAINER_PASSWORD) {
     document.getElementById("pwError").classList.remove("hidden");
+    return;
   }
+
+  document.getElementById("pwError").classList.add("hidden");
+  document.getElementById("resultsSection").classList.remove("hidden");
+
+  await loadResults();
 };
 
-// Ergebnisse laden (fertig aggregiert aus Apps Script)
+// Ergebnisse laden
 async function loadResults() {
   const res = await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({ action: "results" })
   });
-  const resultList = await res.json();
 
-  while (resultsTable.rows.length > 1) {
-    resultsTable.deleteRow(1);
-  }
+  const resultList = await res.json();
+  const table = document.getElementById("resultsTable");
+
+  while (table.rows.length > 1) table.deleteRow(1);
 
   resultList.forEach(item => {
-    const row = resultsTable.insertRow();
+    const row = table.insertRow();
     row.insertCell().textContent = "Design " + item.design;
     row.insertCell().textContent = item.avg === null ? "-" : item.avg.toFixed(2);
     row.insertCell().textContent = item.count;
   });
 }
 
-// Reset – wirklich in Google Sheets
+// Reset
 document.getElementById("resetBtn").onclick = async () => {
   await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({ action: "reset" })
   });
 
-  // lokale Markierung entfernen
   localStorage.removeItem("voted");
   document.getElementById("resetMsg").classList.remove("hidden");
 
-  // Tabelle im Trainerbereich leeren
-  while (resultsTable.rows.length > 1) {
-    resultsTable.deleteRow(1);
-  }
+  const table = document.getElementById("resultsTable");
+  while (table.rows.length > 1) table.deleteRow(1);
 };
 </script>
-
 
 </body>
 <footer style="text-align:center; font-size:12px; opacity:0.7; margin-top:20px;">
